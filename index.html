@@ -18,17 +18,18 @@
             <button id="search-btn">Search</button>
         </div>
 
+        <!-- NEW: Recent Searches -->
+        <div id="recent-searches-container" class="recent-searches hidden">
+            <h3>Recent Searches</h3>
+            <div id="recent-searches" class="recent-buttons"></div>
+            <button id="clear-history-btn" class="clear-btn">Clear History</button>
+        </div>
+
         <!-- Weather Card -->
         <div class="weather-card">
             <h2 id="city">London</h2>
-            
-            <!-- Loading Spinner (hidden initially) -->
             <div id="loading-spinner" class="spinner hidden"></div>
-            
-            <!-- Error Message (hidden initially) -->
             <div id="error-message" class="error hidden"></div>
-            
-            <!-- Weather Content (shown when data loaded) -->
             <div id="weather-content">
                 <div class="weather-main">
                     <img id="weather-icon" src="" alt="Weather icon">
@@ -40,7 +41,7 @@
             </div>
         </div>
 
-        <!-- Forecast Section (will be populated by JavaScript) -->
+        <!-- Forecast Section -->
         <div id="forecast-section" class="forecast-section hidden">
             <h3>5‑Day Forecast</h3>
             <div id="forecast-container" class="forecast-container"></div>
@@ -50,7 +51,6 @@
             <p>Data from OpenWeatherMap</p>
         </footer>
     </div>
-
     <script src="app.js"></script>
 </body>
 </html>

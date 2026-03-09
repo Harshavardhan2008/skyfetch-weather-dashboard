@@ -1,8 +1,8 @@
-// ===== PART 3: SkyFetch Weather App (OOP with Prototypes) =====
+// ===== PART 4: SkyFetch Weather App – Final Version with localStorage =====
 
 function WeatherApp() {
     // API configuration
-    this.API_KEY = 'b68b2de0be8431e39c4e09c5f188e3ef';      // <-- REPLACE WITH YOUR KEY
+    this.API_KEY = 'b68b2de0be8431e39c4e09c5f188e3ef';  // Replace with your key
     this.BASE_URL = 'https://api.openweathermap.org/data/2.5/weather';
     this.FORECAST_URL = 'https://api.openweathermap.org/data/2.5/forecast';
 
@@ -18,6 +18,13 @@ function WeatherApp() {
     this.weatherContent = document.getElementById('weather-content');
     this.forecastSection = document.getElementById('forecast-section');
     this.forecastContainer = document.getElementById('forecast-container');
+    this.recentSearchesContainer = document.getElementById('recent-searches-container');
+    this.recentSearchesDiv = document.getElementById('recent-searches');
+    this.clearHistoryBtn = document.getElementById('clear-history-btn');
+
+    // localStorage data
+    this.recentSearches = [];   // array of city names
+    this.lastCity = null;        // last searched city
 }
 
 // ===== Utility Methods =====
@@ -52,6 +59,75 @@ WeatherApp.prototype.showWelcome = function() {
     this.iconEl.src = '';
 };
 
+// ===== localStorage Methods =====
+WeatherApp.prototype.loadRecentSearches = function() {
+    const stored = localStorage.getItem('recentSearches');
+    this.recentSearches = stored ? JSON.parse(stored) : [];
+    this.displayRecentSearches();
+};
+
+WeatherApp.prototype.saveRecentSearch = function(city) {
+    if (!city) return;
+    // Convert to title case (first letter uppercase, rest lowercase)
+    const formattedCity = city
+        .split(' ')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        .join(' ');
+
+    // Remove if already exists (to avoid duplicates and move to front)
+    this.recentSearches = this.recentSearches.filter(c => c !== formattedCity);
+    // Add to front
+    this.recentSearches.unshift(formattedCity);
+    // Keep only the last 5
+    if (this.recentSearches.length > 5) this.recentSearches.pop();
+
+    // Save to localStorage
+    localStorage.setItem('recentSearches', JSON.stringify(this.recentSearches));
+    this.displayRecentSearches();
+};
+
+WeatherApp.prototype.displayRecentSearches = function() {
+    if (this.recentSearches.length === 0) {
+        this.recentSearchesContainer.classList.add('hidden');
+        return;
+    }
+    this.recentSearchesContainer.classList.remove('hidden');
+    let html = '';
+    this.recentSearches.forEach(city => {
+        html += `<button class="recent-btn" data-city="${city}">${city}</button>`;
+    });
+    this.recentSearchesDiv.innerHTML = html;
+
+    // Attach click handlers to each button
+    const buttons = this.recentSearchesDiv.querySelectorAll('.recent-btn');
+    buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const city = btn.dataset.city;
+            this.cityInput.value = city;
+            this.getWeather(city);
+        });
+    });
+};
+
+WeatherApp.prototype.loadLastCity = function() {
+    const lastCity = localStorage.getItem('lastCity');
+    if (lastCity) {
+        this.cityInput.value = lastCity;
+        this.getWeather(lastCity);
+    } else {
+        this.showWelcome();
+    }
+};
+
+WeatherApp.prototype.clearHistory = function() {
+    this.recentSearches = [];
+    localStorage.removeItem('recentSearches');
+    localStorage.removeItem('lastCity');
+    this.displayRecentSearches();
+    this.showWelcome();
+    this.cityInput.value = '';
+};
+
 // ===== Main Weather Fetch =====
 WeatherApp.prototype.getWeather = async function(city) {
     if (!city || city.trim() === '') {
@@ -76,6 +152,10 @@ WeatherApp.prototype.getWeather = async function(city) {
 
         this.displayWeather(weatherResponse.data);
         this.displayForecast(forecastResponse.data);
+
+        // Save to recent searches and last city
+        this.saveRecentSearch(cleanCity);
+        localStorage.setItem('lastCity', cleanCity);
 
     } catch (error) {
         console.error('API call failed:', error);
@@ -185,10 +265,17 @@ WeatherApp.prototype.handleKeyPress = function(event) {
 
 // ===== Initialization =====
 WeatherApp.prototype.init = function() {
-    this.showWelcome();
+    // Load recent searches from localStorage
+    this.loadRecentSearches();
+    // Load last searched city (if any)
+    this.loadLastCity();
+
+    // Event listeners
     this.searchBtn.addEventListener('click', this.handleSearch.bind(this));
     this.cityInput.addEventListener('keypress', this.handleKeyPress.bind(this));
-    console.log('WeatherApp initialized (OOP version)');
+    this.clearHistoryBtn.addEventListener('click', this.clearHistory.bind(this));
+
+    console.log('WeatherApp initialized with localStorage');
 };
 
 // ===== Start the app =====
