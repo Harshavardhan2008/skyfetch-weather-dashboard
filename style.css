@@ -19,7 +19,7 @@ body {
     border-radius: 20px;
     box-shadow: 0 20px 60px rgba(0,0,0,0.3);
     padding: 2rem;
-    max-width: 500px;
+    max-width: 600px;
     width: 100%;
     text-align: center;
 }
@@ -36,7 +36,7 @@ h1 {
     font-size: 1rem;
 }
 
-/* ===== NEW: Search Section Styles ===== */
+/* ===== Search Section ===== */
 .search-section {
     display: flex;
     gap: 0.5rem;
@@ -121,7 +121,7 @@ h1 {
     text-transform: capitalize;
 }
 
-/* ===== NEW: Loading Spinner ===== */
+/* ===== Loading Spinner ===== */
 .spinner {
     border: 4px solid #f3f3f3;
     border-top: 4px solid #667eea;
@@ -137,7 +137,7 @@ h1 {
     100% { transform: rotate(360deg); }
 }
 
-/* ===== NEW: Error Message ===== */
+/* ===== Error Message ===== */
 .error {
     background-color: #fee;
     color: #c33;
@@ -155,6 +155,74 @@ h1 {
 /* ===== Utility Classes ===== */
 .hidden {
     display: none;
+}
+
+/* ===== Part 3: Forecast Section ===== */
+.forecast-section {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 2px solid #e0e0e0;
+}
+
+.forecast-section h3 {
+    color: #333;
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    text-align: left;
+}
+
+.forecast-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.forecast-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.forecast-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+}
+
+.forecast-day {
+    font-weight: bold;
+    color: #667eea;
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.forecast-icon {
+    width: 60px;
+    height: 60px;
+    margin: 0.5rem auto;
+}
+
+.forecast-temp {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+    margin: 0.5rem 0;
+}
+
+.forecast-desc {
+    color: #666;
+    font-size: 0.9rem;
+    text-transform: capitalize;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .forecast-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 footer {
